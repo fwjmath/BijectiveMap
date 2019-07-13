@@ -12,6 +12,7 @@
 from sage.graphs.graph import Graph
 
 class BijectiveMap:
+    
     r"""
     Combinatorial maps for bijective use
     
@@ -318,8 +319,9 @@ class BijectiveMap:
         r"""
         Returns whether the map is connected
         """
-        if not self._canonical:
-            self.__canonicalize()
+        flag = True
+        self.traversal(lambda x, y: flag = flag and (y == 1))
+        self._connected = flag
         return self._connected
     
     def __rename_label(self, c, cp):
@@ -490,6 +492,34 @@ class BijectiveMap:
         del self._vertices[c2]
         return True
 
+    def split_edge(self, c):
+        r"""
+        Operation to split an edge into two. Returns the corner that shares the
+        same edge as the input.
+
+        INPUT:
+
+        -- ``c``: a corner indicating the edge to split
+
+        OUTPUT:
+
+        Returns the corner sharing the same edge as the input in the new map
+        """
+        self.__check_corner(c)
+        self.__perform_operation()
+        cp = self._edges[c]
+        c1 = self._accucnt
+        c2 = c1 + 1
+        self._accucnt += 2
+        self._size += 1
+        self._edges[c] = c1
+        self._edges[cp] = c2
+        self._vertices[c1] = c2
+        self._vertices[c2] = c1
+        self._vertices_inv[c1] = c2
+        self._vertices_inv[c2] = c1
+        return c1
+    
     def join_corners(self, c1, c2):
         r"""
         Operation to join two given corners on different vertices. Returns if
@@ -613,29 +643,11 @@ class BijectiveMap:
             return
         self.join_corners(c1, c2)
 
-    def to_graph(self, embedded=True):
+    def __to_graph_raw(embedded=True)
         r"""
-        Convert the current map to a graph (optionally with embedding
-        information) in sage. Canonicalization will be applied first. Due to
-        limitation in Sagemath, multiple edges are not supported when
-        embedding is needed, and an error will be raised.
-
-        INPUT:
-
-        -- ``embedded``: indicating whether embedding information is added
-
-        OUTPUT:
-
-        A graph object in Sagemath, if succeeded
-
-        NOTE:
-        
-        Currently the embedding information in sage does not allow us to
-        distinguish different edges in multiedge case. Nothing is guaranteed
-        here. Judging from the implementation in Sagemath, an improvement may
-        not be possible in the near future.
+        Internal function, returns a graph corresponding to the current map,
+        using the current labels.
         """
-        self.__canonicalize()
         vlist = []
         cornerv = {}
         vcnt = 0
@@ -675,10 +687,42 @@ class BijectiveMap:
             g.set_embedding(embdict)
         return g
     
+    def to_graph(self, embedded=True):
+        r"""
+        Convert the current map to a graph (optionally with embedding
+        information) in sage. Canonicalization will be applied first. Due to
+        limitation in Sagemath, multiple edges are not supported when
+        embedding is needed, and an error will be raised.
+
+        INPUT:
+
+        -- ``embedded``: indicating whether embedding information is added
+
+        OUTPUT:
+
+        A graph object in Sagemath, if succeeded
+
+        NOTE:
+        
+        Currently the embedding information in sage does not allow us to
+        distinguish different edges in multiedge case. Nothing is guaranteed
+        here. Judging from the implementation in Sagemath, an improvement may
+        not be possible in the near future.
+        """
+        self.__canonicalize()
+        return self.__to_graph_raw(embedded)
+    
     def plot(self):
         r"""
         Returns a plot of the current map. Plotting ability is limited by that
         of Sagemath.
         """
         return self.to_graph().plot(layout="planar", edge_labels=True)
-    
+
+    def to_graph_debug(self, embedded=True):
+        r"""
+        Similar to the function to_graph(), but without canonicalizing first.
+        Intended to be used to debug bijections based on this class.
+        See to_graoh()
+        """    
+        return self.__to_graph_raw(embedded)

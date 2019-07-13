@@ -27,6 +27,8 @@ The following functions are provided:
 
 - `smooth_out`: removes a vertex of degree 2
 
+- `split_edge`: splits an edge into two
+
 - `join_corners`: joins two given corners (not on the same vertex)
 
 - `add_edges`: adds an edge between two corners, returns the new corners
@@ -37,4 +39,10 @@ The following functions are provided:
 
 - `to_graph`: convert to a graph object with embeddings in Sagemath
 
+- `to_graph_debug`: a debug version of `to_graph`, not canonicalized, used for debugging bijections written in this class.
+
 - `plot`: plots the map with Sagemath's functionality. Due to the limitation of Sagemath, it does not work on non-planar maps or disconnected maps.
+
+**TODO**
+
+- Add functionality to draw a map properly, allowing all constructions
