@@ -1,7 +1,10 @@
 # BijectiveMap
+
 A Sagemath class for bijective operations of combinatorial maps
 
 It is based on rotation systems. Every operation is done by corners. When an edge is drawed horizontaly, the related corners are those on the lower-left and upper-right. The root corner is always 0.
+
+Usage examples can be found in the notebook `BijectiveMap-sample.ipynb`.
 
 The following functions are provided:
 
@@ -15,7 +18,7 @@ The following functions are provided:
 
 - `corners_around_vertex`: returns a list of corners of the same vertex, in counter-clockwise order
 
-- `traversal`: performs traversal with a given function, which can read the current corner and the component number of it
+- `traversal`: performs traversal with a given function, which can read the current corner and its component number
 
 - `is_connected`: returns whether the map is connected
 
@@ -33,13 +36,13 @@ The following functions are provided:
 
 - `add_edges`: adds an edge between two corners, returns the new corners
 
-- `delete_edges`: deletes an edge, returns the current corners of the two ends of the deleted edge, can be None in the case of degree 1
+- `delete_edges`: deletes an edge, returns the current corners of the two ends of the deleted edge, can be `None` in the case of degree 1
 
 - `contract`: contracts a non-loop edge
 
 - `to_graph`: convert to a graph object with embeddings in Sagemath
 
-- `to_graph_debug`: a debug version of `to_graph`, not canonicalized, used for debugging bijections written in this class.
+- `to_graph_debug`: a debug version of `to_graph`, not canonicalized, used for debugging bijections written using this class.
 
 - `plot`: plots the map with Sagemath's functionality. Due to the limitation of Sagemath, it does not work on non-planar maps or disconnected maps.
 

@@ -319,9 +319,12 @@ class BijectiveMap:
         r"""
         Returns whether the map is connected
         """
-        flag = True
-        self.traversal(lambda x, y: flag = flag and (y == 1))
-        self._connected = flag
+        flag = [True]
+        def aux(x, y):
+            flag[0] = (flag[0] and (1 == y))
+        
+        self.traversal(aux)
+        self._connected = flag[0]
         return self._connected
     
     def __rename_label(self, c, cp):
@@ -643,7 +646,7 @@ class BijectiveMap:
             return
         self.join_corners(c1, c2)
 
-    def __to_graph_raw(embedded=True)
+    def __to_graph_raw(self, embedded=True):
         r"""
         Internal function, returns a graph corresponding to the current map,
         using the current labels.
@@ -717,6 +720,8 @@ class BijectiveMap:
         Returns a plot of the current map. Plotting ability is limited by that
         of Sagemath.
         """
+        if not self.is_connected():
+            raise ValueError("The map is not connected, thus not plottable.")
         return self.to_graph().plot(layout="planar", edge_labels=True)
 
     def to_graph_debug(self, embedded=True):
